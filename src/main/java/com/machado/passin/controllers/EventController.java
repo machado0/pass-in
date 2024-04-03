@@ -1,6 +1,8 @@
 package com.machado.passin.controllers;
 
+import com.machado.passin.dto.attendee.AttendeeIdDTO;
 import com.machado.passin.dto.attendee.AttendeeListResponseDTO;
+import com.machado.passin.dto.attendee.AttendeeRequestDTO;
 import com.machado.passin.dto.events.EventIdDTO;
 import com.machado.passin.dto.events.EventRequestDTO;
 import com.machado.passin.dto.events.EventResponseDTO;
@@ -44,4 +46,10 @@ public class EventController {
                 .body(event);
     }
 
-}
+    @PostMapping("/{eventId}/attendees")
+    public ResponseEntity<AttendeeIdDTO> registerParticipant(@PathVariable String eventId, @RequestBody AttendeeRequestDTO body, UriComponentsBuilder uriComponentsBuilder) {
+        AttendeeIdDTO attendee = eventService.registerAttendeeOnEvent(body, eventId);
+        return ResponseEntity
+                .created(uriComponentsBuilder.path("/attendees/{attendeeId}/badge").buildAndExpand(attendee.attendeeId()).toUri())
+                .body(attendee);
+    }}
